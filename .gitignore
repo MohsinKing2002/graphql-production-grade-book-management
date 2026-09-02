@@ -1,0 +1,24 @@
+# ==========================================
+# Global / Environment Ignored Files
+# ==========================================
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# ==========================================
+# Backend / Server Ignored Files
+# ==========================================
+server/node_modules/
+server/.env
+server/dist/
+server/build/
+
+# ==========================================
+# Frontend / Client Ignored Files
+# ==========================================
+client/node_modules/
+client/.env.local
+client/.env.development.local
+client/dist/
+client/build/
