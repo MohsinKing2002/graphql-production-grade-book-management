@@ -1,15 +1,14 @@
 // App.js is resposible for creating the graphql server and export it
 import { ApolloServer } from "@apollo/server";
-
-const typeDefs = `#graphql
-    type Query {
-        hello: String
-    }
-`;
+import { typeDefs } from "./graphql/schema/index.js";
+import { books } from "./data/data.js";
 
 const resolvers = {
   Query: {
-    hello: () => "Hello GraphQL",
+    books: () => books,
+    book: (_, args) => {
+      return books.find((book) => book.id === args.id);
+    },
   },
 };
 
