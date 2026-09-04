@@ -2,6 +2,8 @@ import {
   getAllBooks,
   getBookById,
   createNewBook,
+  updateBookDetails,
+  deleteBookByID,
 } from "../repositories/book.repository.js";
 
 export const getBooks = () => {
@@ -26,4 +28,25 @@ export const createBook = (input) => {
   };
 
   return createNewBook(book);
+};
+
+export const updateBook = (id, input) => {
+  const existingBook = getBookById(id);
+  if (!existingBook) throw new Error("Book not found");
+
+  if (input.title !== undefined && !input.title.trim())
+    throw new Error("Book title cannot be Empty");
+  if (input.author !== undefined && !input.author.trim())
+    throw new Error("Book author cannot be Empty");
+  if (input.publishedYear !== undefined && input.publishedYear < 0)
+    throw new Error("Invalid publised year");
+
+  return updateBookDetails(id, input);
+};
+
+export const deleteBook = (id) => {
+  const existingBook = getBookById(id);
+  if (!existingBook) throw new Error("Book not found");
+
+  return deleteBookByID(id);
 };
