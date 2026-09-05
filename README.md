@@ -1,5 +1,26 @@
 # Graphql Production Grade Book Management Application
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Goals](#goals)
+- [Application Overview](#application-overview)
+- [Architectural Principles](#architectural-principles)
+- [Data Storage Strategy](#data-storage-strategy)
+- [Proposed Project Structure](#proposed-project-structure)
+- [Backend Layers](#backend-layers)
+- [GraphQL Concepts We Will Learn](#graphql-concepts-we-will-learn)
+- [Frontend Architecture
+  ](#frontend-architecture)
+- [GraphQL Client](#graphql-client)
+- [Development Phases](#development-phases)
+- [Future Database Migration](#future-database-migration)
+- [Engineering Principles](#engineering-principles)
+- [Technology Stack](#technology-stack)
+- [Final Target Architecture](#final-target-architecture)
+
+# Project Overview
+
 A small full-stack application for learning and exploring GraphQL using a production-oriented architecture.
 
 The application allows users to:
