@@ -3,21 +3,21 @@
 ## Table of Contents
 
 - [Project Overview](#project-overview)
-- [Goals](#goals)
-- [Application Overview](#application-overview)
-- [Architectural Principles](#architectural-principles)
-- [Data Storage Strategy](#data-storage-strategy)
-- [Proposed Project Structure](#proposed-project-structure)
-- [Backend Layers](#backend-layers)
-- [GraphQL Concepts We Will Learn](#graphql-concepts-we-will-learn)
-- [Frontend Architecture
-  ](#frontend-architecture)
-- [GraphQL Client](#graphql-client)
-- [Development Phases](#development-phases)
-- [Future Database Migration](#future-database-migration)
-- [Engineering Principles](#engineering-principles)
-- [Technology Stack](#technology-stack)
-- [Final Target Architecture](#final-target-architecture)
+- [Goals](#1-goals)
+- [Application Overview](#2-application-overview)
+- [Architectural Principles](#3-architectural-principles)
+- [Data Storage Strategy](#4-data-storage-strategy)
+- [Proposed Project Structure](#5-proposed-project-structure)
+- [Backend Layers](#6-backend-layers)
+- [GraphQL API](#7-graphql-api)
+- [GraphQL Concepts We Will Learn](#8-graphql-concepts-we-will-learn)
+- [Frontend Architecture](#9-frontend-architecture)
+- [GraphQL Client](#10-graphql-client)
+- [Development Phases](#11-development-phases)
+- [Future Database Migration](#12-future-database-migration)
+- [Engineering Principles](#13-engineering-principles)
+- [Technology Stack](#15-technology-stack)
+- [Final Target Architecture](#16-final-target-architecture)
 
 # Project Overview
 
@@ -649,7 +649,7 @@ The architecture should evolve with the application's needs.
 
 We should complete the phases sequentially and avoid jumping ahead unless there is a good reason.
 
-## 17. Technology Stack
+## 15. Technology Stack
 
 Initial planned stack:
 
@@ -669,7 +669,7 @@ Initial planned stack:
 - JavaScript in-memory array
 - No database or ORM will be used initially.
 
-## 18. Final Target Architecture
+## 16. Final Target Architecture
 
 The final conceptual architecture is:
 
