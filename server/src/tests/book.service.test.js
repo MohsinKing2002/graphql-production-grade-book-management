@@ -1,40 +1,54 @@
-import { describe, expect, it } from "vitest";
-import {
-  createBook,
-  deleteBook,
-  getBook,
-  getBooks,
-  updateBook,
-} from "../services/book.service.js";
+import { describe, expect, it, beforeEach } from "vitest";
+import { createBookService } from "../services/book.service.js";
+import { createBookRepository } from "../repositories/book.repository.js";
+import { testBooks } from "./fixtures/book.fixture.js";
+
+let bookService, books;
+
+beforeEach(() => {
+  books = structuredClone(testBooks);
+  const testRepository = createBookRepository(books);
+  bookService = createBookService(testRepository);
+});
 
 describe("Book Service", () => {
   describe("getBooks", () => {
     it("should return all books", () => {
-      const books = getBooks();
+      const books = bookService.getBooks();
 
       expect(books).toBeInstanceOf(Array);
-      expect(books.length).toBeGreaterThan(0);
+      expect(books).toHaveLength(2);
     });
   });
 
   describe("getBook", () => {
     it("should return a book when the id exists", () => {
-      const book = getBook("1");
+      const book = bookService.getBook("1");
 
       expect(book).toBeDefined();
       expect(book.id).toBe("1");
     });
 
     it("should return undefined when the ID doesn't exists", () => {
-      const book = getBook("10111");
+      const book = bookService.getBook("10111");
 
       expect(book).toBeUndefined();
     });
   });
 
   describe("createBook", () => {
+    it("should not modify the original test fixture", () => {
+      bookService.createBook({
+        title: "New Test Book",
+        author: "Test Author",
+        publishedYear: 2025,
+      });
+
+      expect(testBooks).toHaveLength(2);
+    });
+
     it("it should create and return a new book", () => {
-      const book = createBook({
+      const book = bookService.createBook({
         title: "Test Book",
         author: "Test Author",
         publishedYear: 2026,
@@ -50,7 +64,7 @@ describe("Book Service", () => {
 
     it("should reject an empty title", () => {
       expect(() =>
-        createBook({
+        bookService.createBook({
           title: "",
           author: "Test Author",
           publishedYear: 2026,
@@ -59,7 +73,7 @@ describe("Book Service", () => {
     });
     it("should reject an empty author", () => {
       expect(() =>
-        createBook({
+        bookService.createBook({
           title: "Test title",
           author: "",
           publishedYear: 2026,
@@ -68,7 +82,7 @@ describe("Book Service", () => {
     });
     it("should reject an invalid year", () => {
       expect(() =>
-        createBook({
+        bookService.createBook({
           title: "Test title",
           author: "Test Author",
           publishedYear: -2026,
@@ -79,7 +93,7 @@ describe("Book Service", () => {
 
   describe("updateBook", () => {
     it("should update an existing book", () => {
-      const book = updateBook("1", {
+      const book = bookService.updateBook("1", {
         title: "Updated Title",
       });
 
@@ -90,7 +104,7 @@ describe("Book Service", () => {
 
     it("should reject updating a nonexistent book", () => {
       expect(() =>
-        updateBook("999", {
+        bookService.updateBook("999", {
           title: "Updated Book",
         }),
       ).toThrow("Book not found");
@@ -98,21 +112,21 @@ describe("Book Service", () => {
 
     it("should reject an empty title", () => {
       expect(() =>
-        updateBook("1", {
+        bookService.updateBook("1", {
           title: "",
         }),
       ).toThrow("Book title cannot be Empty");
     });
     it("should reject an empty author", () => {
       expect(() =>
-        updateBook("1", {
+        bookService.updateBook("1", {
           author: "",
         }),
       ).toThrow("Book author cannot be Empty");
     });
     it("should reject an invalid year", () => {
       expect(() =>
-        updateBook("1", {
+        bookService.updateBook("1", {
           publishedYear: -2026,
         }),
       ).toThrow("Invalid publish year");
@@ -121,14 +135,14 @@ describe("Book Service", () => {
 
   describe("deleteBook", () => {
     it("it should delete existing book", () => {
-      const book = deleteBook("1");
+      const book = bookService.deleteBook("1");
 
       expect(book).toBeDefined();
       expect(book.id).toBe("1");
     });
 
     it("should reject deleting non-existing book", () => {
-      expect(() => deleteBook("100000")).toThrow("Book not found");
+      expect(() => bookService.deleteBook("100000")).toThrow("Book not found");
     });
   });
 });
