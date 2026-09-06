@@ -42,7 +42,7 @@ export const updateBook = (id, input) => {
   if (input.author !== undefined && !input.author.trim())
     throw new AppError("Book author cannot be Empty", "VALIDATION_ERROR");
   if (input.publishedYear !== undefined && input.publishedYear < 0)
-    throw new AppError("Invalid publised year", "VALIDATION_ERROR");
+    throw new AppError("Invalid publish year", "VALIDATION_ERROR");
 
   return updateBookDetails(id, input);
 };
