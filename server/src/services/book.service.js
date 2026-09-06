@@ -1,18 +1,12 @@
-import {
-  getAllBooks,
-  getBookById,
-  createNewBook,
-  updateBookDetails,
-  deleteBookByID,
-} from "../repositories/book.repository.js";
+import { bookRepository } from "../repositories/index.js";
 import { AppError } from "../utils/errors.js";
 
 export const getBooks = () => {
-  return getAllBooks();
+  return bookRepository.getAllBooks();
 };
 
 export const getBook = (id) => {
-  return getBookById(id);
+  return bookRepository.getBookById(id);
 };
 
 export const createBook = (input) => {
@@ -30,11 +24,11 @@ export const createBook = (input) => {
     ...input,
   };
 
-  return createNewBook(book);
+  return bookRepository.createNewBook(book);
 };
 
 export const updateBook = (id, input) => {
-  const existingBook = getBookById(id);
+  const existingBook = bookRepository.getBookById(id);
   if (!existingBook) throw new AppError("Book not found", "BOOK_NOT_FOUND");
 
   if (input.title !== undefined && !input.title.trim())
@@ -44,12 +38,12 @@ export const updateBook = (id, input) => {
   if (input.publishedYear !== undefined && input.publishedYear < 0)
     throw new AppError("Invalid publish year", "VALIDATION_ERROR");
 
-  return updateBookDetails(id, input);
+  return bookRepository.updateBookDetails(id, input);
 };
 
 export const deleteBook = (id) => {
-  const existingBook = getBookById(id);
+  const existingBook = bookRepository.getBookById(id);
   if (!existingBook) throw new AppError("Book not found", "BOOK_NOT_FOUND");
 
-  return deleteBookByID(id);
+  return bookRepository.deleteBookByID(id);
 };
