@@ -3,4 +3,21 @@ import { ApolloServer } from "@apollo/server";
 import { typeDefs } from "./graphql/schema/index.js";
 import { resolvers } from "./graphql/resolvers/index.js";
 
-export const server = new ApolloServer({ typeDefs, resolvers });
+export const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+
+  formatError: (formattedError, error) => {
+    if (error.originalError?.code) {
+      return {
+        ...formattedError,
+        extensions: {
+          ...formattedError.extensions,
+          code: error.originalError?.code,
+        },
+      };
+    }
+
+    return formattedError;
+  },
+});

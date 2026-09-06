@@ -49,7 +49,7 @@ export const updateBook = (id, input) => {
 
 export const deleteBook = (id) => {
   const existingBook = getBookById(id);
-  if (!existingBook) throw new AppError("Book not found");
+  if (!existingBook) throw new AppError("Book not found", "BOOK_NOT_FOUND");
 
   return deleteBookByID(id);
 };
