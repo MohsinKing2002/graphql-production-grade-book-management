@@ -181,6 +181,76 @@ describe("Book GraphQL API", () => {
     );
   });
 
+  //invalid input
+  it("should reject a book with empty title", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        createBook(
+          input: {
+            title: "",
+            author: "Test Author",
+            publishedYear: 2025
+          }
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Book title is required");
+    expect(error.extensions.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("should reject a book with empty author", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        createBook(
+          input: {
+            title: "Test Title",
+            author: "",
+            publishedYear: 2025
+          }
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Book author is required");
+    expect(error.extensions.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("should reject a book with invalid publish year", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        createBook(
+          input: {
+            title: "Test Title",
+            author: "Test Author",
+            publishedYear: -2025
+          }
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Invalid publish year");
+    expect(error.extensions.code).toBe("VALIDATION_ERROR");
+  });
+
   /***** Mutation - Update Book *****/
   it("should update an existing book", async () => {
     const server = createTestServer();
@@ -214,6 +284,50 @@ describe("Book GraphQL API", () => {
       author: "Update - Book Author 2",
       publishedYear: 2021,
     });
+  });
+
+  it("should reject an update with an empty title", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        updateBook(
+          id: "2",
+          input: {
+            title: ""
+          }
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Book title cannot be Empty");
+    expect(error.extensions.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("should reject updating an no-existing book", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        updateBook(
+          id: "not-exists",
+          input: {
+            title: "Test Title"
+          }
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Book not found");
+    expect(error.extensions.code).toBe("BOOK_NOT_FOUND");
   });
 
   /***** Mutation - Delete Book *****/
@@ -272,5 +386,42 @@ describe("Book GraphQL API", () => {
     const responseDeleted = await executeOperation(server, query);
     expect(responseDeleted.body.singleResult.errors).toBeUndefined();
     expect(responseDeleted.body.singleResult.data.book).toBeNull();
+  });
+
+  it("should reject deleting a non-existing book", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        deleteBook(
+          id: "doesn't exists"
+        ){
+          id
+          title
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toBe("Book not found");
+    expect(error.extensions.code).toBe("BOOK_NOT_FOUND");
+  });
+
+  /***** Schema Validation Failure *****/
+  it("should reject a mutation with missing required input", async () => {
+    const server = createTestServer();
+    const mutation = `
+      mutation{
+        createBook{
+          id
+        }
+      }
+    `;
+
+    const response = await executeOperation(server, mutation);
+    const error = response.body.singleResult.errors[0];
+    expect(error.message).toContain(
+      'Argument "Mutation.createBook(input:)" of type "CreateBookInput!" is required',
+    );
   });
 });

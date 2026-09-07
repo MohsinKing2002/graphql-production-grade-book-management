@@ -14,5 +14,19 @@ export const createTestServer = () => {
   return new ApolloServer({
     typeDefs,
     resolvers,
+
+    formatError: (formattedError, error) => {
+      if (error.originalError?.code) {
+        return {
+          ...formattedError,
+          extensions: {
+            ...formattedError.extensions,
+            code: error.originalError?.code,
+          },
+        };
+      }
+
+      return formattedError;
+    },
   });
 };
