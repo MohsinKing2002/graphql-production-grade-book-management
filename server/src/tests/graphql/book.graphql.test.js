@@ -180,4 +180,97 @@ describe("Book GraphQL API", () => {
       createdBook,
     );
   });
+
+  /***** Mutation - Update Book *****/
+  it("should update an existing book", async () => {
+    const server = createTestServer();
+
+    const mutation = `
+      mutation UpdateBook(
+        $id: ID! 
+        $input: UpdateBookInput!
+      ) {
+        updateBook(id: $id, input: $input) {
+          id
+          title
+          author
+          publishedYear
+        }
+      }
+    `;
+    const variables = {
+      id: "2",
+      input: {
+        title: "Update - Book Title 2",
+        author: "Update - Book Author 2",
+      },
+    };
+
+    const response = await executeOperation(server, mutation, variables);
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(response.body.singleResult.data.updateBook).toEqual({
+      id: "2",
+      title: "Update - Book Title 2",
+      author: "Update - Book Author 2",
+      publishedYear: 2021,
+    });
+  });
+
+  /***** Mutation - Delete Book *****/
+  it("should delete an existing book", async () => {
+    const server = createTestServer();
+
+    const mutation = `
+      mutation DeleteBook($id: ID!) {
+        deleteBook(id: $id) {
+          id
+          title
+          author
+          publishedYear
+        }
+      }
+    `;
+    const variables = {
+      id: "2",
+    };
+
+    const response = await executeOperation(server, mutation, variables);
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(response.body.singleResult.data.deleteBook).toEqual({
+      id: "2",
+      title: "Test Book 2",
+      author: "Test Author 2",
+      publishedYear: 2021,
+    });
+  });
+
+  it("should not find a book after deleting it", async () => {
+    const server = createTestServer();
+
+    const mutation = `
+      mutation DeleteBook($id: ID!) {
+        deleteBook(id: $id) {
+          id
+        }
+      }
+    `;
+    const variables = {
+      id: "2",
+    };
+
+    const response = await executeOperation(server, mutation, variables);
+    expect(response.body.singleResult.errors).toBeUndefined();
+
+    const query = `
+      query {
+        book(id: "2"){
+          id
+        }
+      }
+    `;
+
+    const responseDeleted = await executeOperation(server, query);
+    expect(responseDeleted.body.singleResult.errors).toBeUndefined();
+    expect(responseDeleted.body.singleResult.data.book).toBeNull();
+  });
 });
