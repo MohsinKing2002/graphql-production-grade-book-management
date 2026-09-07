@@ -1,6 +1,4 @@
-import { bookService } from "../../services/index.js";
-
-export const bookResolvers = {
+export const createBookResolvers = (bookService) => ({
   Query: {
     books: () => bookService.getBooks(),
     book: (_, { id }) => bookService.getBook(id),
@@ -10,4 +8,4 @@ export const bookResolvers = {
     updateBook: (_, { id, input }) => bookService.updateBook(id, input),
     deleteBook: (_, { id }) => bookService.deleteBook(id),
   },
-};
+});

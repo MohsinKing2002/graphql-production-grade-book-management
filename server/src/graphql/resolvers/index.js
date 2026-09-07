@@ -1,3 +1,6 @@
-import { bookResolvers } from "./book.resolver.js";
+import { createBookResolvers } from "./book.resolver.js";
+import { createBookService } from "../../services/book.service.js";
+import { bookRepository } from "../../repositories/index.js";
 
-export const resolvers = [bookResolvers];
+const bookService = createBookService(bookRepository);
+export const resolvers = createBookResolvers(bookService);
