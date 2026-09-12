@@ -1,15 +1,22 @@
-import { useState } from "react";
 import "./App.css";
 import BookList from "./components/books/BookList";
+import BookDetails from "./components/books/BookDetails";
+import CreateBook from "./components/books/CreateBook";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <h1>Graphql ui..</h1>
+      <h1>GraphQL Book Management</h1>
 
       <BookList />
+
+      <hr />
+
+      <BookDetails bookId="44" />
+
+      <hr />
+
+      <CreateBook />
     </>
   );
 }
