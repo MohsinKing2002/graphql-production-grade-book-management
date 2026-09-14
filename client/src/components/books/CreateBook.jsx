@@ -9,7 +9,9 @@ const CreateBook = () => {
     publishedYear: 0,
   });
 
-  const [createBook, { data, loading, error }] = useMutation(CREATE_BOOK);
+  const [createBook, { data, loading, error }] = useMutation(CREATE_BOOK, {
+    refetchQueries: ["GetBooks"],
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,12 @@ const CreateBook = () => {
       variables: {
         input: bookInput,
       },
+    });
+
+    setBookInput({
+      title: "",
+      author: "",
+      publishedYear: 0,
     });
   };
   return (
