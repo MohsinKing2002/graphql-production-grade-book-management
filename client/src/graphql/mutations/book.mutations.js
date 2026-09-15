@@ -10,3 +10,14 @@ export const CREATE_BOOK = gql`
     }
   }
 `;
+
+export const UPDATE_BOOK = gql`
+  mutation UpdateBook($id: ID!, $input: UpdateBookInput!) {
+    updateBook(id: $id, input: $input) {
+      id
+      title
+      author
+      publishedYear
+    }
+  }
+`;
