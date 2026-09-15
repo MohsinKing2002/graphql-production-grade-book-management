@@ -3,6 +3,7 @@ import BookList from "./components/books/BookList";
 import BookDetails from "./components/books/BookDetails";
 import CreateBook from "./components/books/CreateBook";
 import UpdateBook from "./components/books/UpdateBook";
+import DeleteBook from "./components/books/DeleteBook";
 
 function App() {
   const book = {
@@ -20,7 +21,7 @@ function App() {
 
       <hr />
 
-      <BookDetails bookId="44" />
+      <BookDetails bookId="4" />
 
       <hr />
 
@@ -28,6 +29,9 @@ function App() {
 
       <hr />
       <UpdateBook book={book} />
+
+      <hr />
+      <DeleteBook bookId={"1"} />
     </>
   );
 }
