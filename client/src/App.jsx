@@ -1,38 +1,55 @@
-import "./App.css";
-import BookList from "./components/books/BookList";
-import BookDetails from "./components/books/BookDetails";
-import CreateBook from "./components/books/CreateBook";
-import UpdateBook from "./components/books/UpdateBook";
-import DeleteBook from "./components/books/DeleteBook";
+import { useState } from "react";
+
+import AppLayout from "./components/layout/AppLayout.jsx";
+import BookList from "./components/books/BookList.jsx";
+import BookDetails from "./components/books/BookDetails.jsx";
+import CreateBook from "./components/books/CreateBook.jsx";
+import UpdateBook from "./components/books/UpdateBook.jsx";
+import DeleteBook from "./components/books/DeleteBook.jsx";
+import Modal from "./components/common/Modal.jsx";
 
 function App() {
-  const book = {
-    id: "1",
-    title: "Clean Code",
-    author: "Robert C. Martin",
-    publishedYear: 2008,
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [modal, setModal] = useState(null);
+
+  const openModal = (type, book = null) => {
+    setSelectedBook(book);
+    setModal(type);
+  };
+
+  const closeModal = () => {
+    setModal(null);
+    setSelectedBook(null);
   };
 
   return (
-    <>
-      <h1>GraphQL Book Management</h1>
+    <AppLayout>
+      <div className="space-y-8">
+        <CreateBook />
 
-      <BookList />
+        <BookList
+          onView={(book) => openModal("view", book)}
+          onEdit={(book) => openModal("edit", book)}
+          onDelete={(book) => openModal("delete", book)}
+        />
+      </div>
 
-      <hr />
+      <Modal open={modal === "view"} title="Book Details" onClose={closeModal}>
+        {selectedBook && <BookDetails bookId={selectedBook.id} />}
+      </Modal>
 
-      <BookDetails bookId="4" />
+      <Modal open={modal === "edit"} title="Edit Book" onClose={closeModal}>
+        {selectedBook && (
+          <UpdateBook book={selectedBook} onClose={closeModal} />
+        )}
+      </Modal>
 
-      <hr />
-
-      <CreateBook />
-
-      <hr />
-      <UpdateBook book={book} />
-
-      <hr />
-      <DeleteBook bookId={"1"} />
-    </>
+      <Modal open={modal === "delete"} title="Delete Book" onClose={closeModal}>
+        {selectedBook && (
+          <DeleteBook book={selectedBook} onClose={closeModal} />
+        )}
+      </Modal>
+    </AppLayout>
   );
 }
 

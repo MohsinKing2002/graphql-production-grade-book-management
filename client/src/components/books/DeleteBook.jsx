@@ -1,28 +1,52 @@
 import { useMutation } from "@apollo/client/react";
 import { DELETE_BOOK } from "../../graphql/mutations/book.mutations.js";
+import { Button } from "../common";
 
-function DeleteBook({ bookId }) {
-  const [deleteBook, { loading, error, data }] = useMutation(DELETE_BOOK, {
+function DeleteBook({ book, onClose }) {
+  const [deleteBook, { loading, error }] = useMutation(DELETE_BOOK, {
     refetchQueries: ["GetBooks"],
   });
 
   const handleDelete = async () => {
-    await deleteBook({
-      variables: {
-        id: bookId,
-      },
-    });
+    try {
+      await deleteBook({
+        variables: {
+          id: book.id,
+        },
+      });
+
+      onClose();
+    } catch {
+      // Apollo error is displayed below.
+    }
   };
 
   return (
     <div>
-      <button onClick={handleDelete} disabled={loading}>
-        {loading ? "Deleting..." : "Delete Book"}
-      </button>
+      <p className="text-sm leading-6 text-text-secondary">
+        Are you sure you want to delete{" "}
+        <span className="font-semibold text-text-primary">"{book.title}"</span>?
+      </p>
 
-      {error && <p>Error: {error.message}</p>}
+      <p className="mt-2 text-sm text-text-secondary">
+        This action cannot be undone.
+      </p>
 
-      {data?.deleteBook && <p>Deleted: {data.deleteBook.title}</p>}
+      {error && (
+        <p className="mt-4 rounded-md bg-danger/10 p-3 text-sm text-danger">
+          {error.message}
+        </p>
+      )}
+
+      <div className="mt-6 flex justify-end gap-3">
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+
+        <Button variant="danger" onClick={handleDelete} disabled={loading}>
+          {loading ? "Deleting..." : "Delete Book"}
+        </Button>
+      </div>
     </div>
   );
 }

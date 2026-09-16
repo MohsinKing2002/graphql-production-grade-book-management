@@ -1,76 +1,106 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { UPDATE_BOOK } from "../../graphql/mutations/book.mutations.js";
+import { Input, Button } from "../common";
 
-const UpdateBook = ({ book }) => {
-  const [bookInput, setBookInput] = useState({
-    title: book?.title,
-    author: book?.author,
-    publishedYear: book?.publishedYear,
+function UpdateBook({ book, onClose }) {
+  const [formData, setFormData] = useState({
+    title: book.title,
+    author: book.author,
+    rating: book.rating ?? "",
+    publishedYear: book.publishedYear ?? "",
   });
-  const [updateBook, { data, loading, error }] = useMutation(UPDATE_BOOK, {
+
+  const [updateBook, { loading, error }] = useMutation(UPDATE_BOOK, {
     refetchQueries: ["GetBooks"],
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (event) => {
+    const { name, value } = event.target;
 
-    await updateBook({
-      variables: {
-        id: book.id,
-        input: bookInput,
-      },
-    });
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      await updateBook({
+        variables: {
+          id: book.id,
+          input: {
+            title: formData.title,
+            author: formData.author,
+            rating: formData.rating ? Number(formData.rating) : null,
+            publishedYear: formData.publishedYear
+              ? Number(formData.publishedYear)
+              : null,
+          },
+        },
+      });
+
+      onClose();
+    } catch {
+      // Apollo error is displayed below.
+    }
+  };
+
   return (
-    <div>
-      <h2>Update Book</h2>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <Input
+        label="Title"
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        required
+      />
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title</label>
-          <input
-            value={bookInput.title}
-            onChange={(e) =>
-              setBookInput((prev) => ({ ...prev, title: e.target.value }))
-            }
-          />
-        </div>
+      <Input
+        label="Author"
+        name="author"
+        value={formData.author}
+        onChange={handleChange}
+        required
+      />
 
-        <div>
-          <label>Author</label>
-          <input
-            value={bookInput.author}
-            onChange={(e) =>
-              setBookInput((prev) => ({ ...prev, author: e.target.value }))
-            }
-          />
-        </div>
+      <Input
+        label="Rating"
+        name="rating"
+        type="number"
+        value={formData.rating}
+        onChange={handleChange}
+        placeholder="e.g. 4.5"
+      />
 
-        <div>
-          <label>Published Year</label>
-          <input
-            type="number"
-            value={bookInput.publishedYear}
-            onChange={(e) =>
-              setBookInput((prev) => ({
-                ...prev,
-                publishedYear: Number(e.target.value),
-              }))
-            }
-          />
-        </div>
+      <Input
+        label="Published Year"
+        name="publishedYear"
+        type="number"
+        value={formData.publishedYear}
+        onChange={handleChange}
+        placeholder="e.g. 2024"
+      />
 
-        <button type="submit" disabled={loading}>
+      {error && (
+        <p className="rounded-md bg-danger/10 p-3 text-sm text-danger">
+          {error.message}
+        </p>
+      )}
+
+      <div className="flex justify-end gap-3">
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+
+        <Button type="submit" variant="primary" disabled={loading}>
           {loading ? "Updating..." : "Update Book"}
-        </button>
-      </form>
-
-      {error && <p>Error: {error.message}</p>}
-
-      {data?.updateBook && <p>Book updated: {data.updateBook.title}</p>}
-    </div>
+        </Button>
+      </div>
+    </form>
   );
-};
+}
 
 export default UpdateBook;
