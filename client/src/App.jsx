@@ -17,11 +17,11 @@ function App() {
     setModal(type);
   };
 
-  const closeModal = () => {
+  const closeModal = (delay = 0) => {
     setTimeout(() => {
       setModal(null);
       setSelectedBook(null);
-    }, 400);
+    }, delay);
   };
 
   return (

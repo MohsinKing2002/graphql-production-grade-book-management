@@ -45,7 +45,7 @@ function CreateBook({ onClose }) {
         publishedYear: "",
       });
 
-      onClose();
+      onClose(400);
     } catch (error) {
       console.error("Failed to create book:", error);
     }

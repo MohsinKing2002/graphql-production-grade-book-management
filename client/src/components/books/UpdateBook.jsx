@@ -40,7 +40,7 @@ function UpdateBook({ book, onClose }) {
         },
       });
 
-      onClose();
+      onClose(400);
     } catch {
       // Apollo error is displayed below.
     }
