@@ -1,6 +1,8 @@
 import Button from "../common/Button.jsx";
 
 function BookCard({ book, onEdit, onDelete, onView }) {
+  const generateRating = () => Number((Math.random() * 0.9 + 4).toFixed(1));
+
   return (
     <article className="flex h-full flex-col rounded-card border border-border bg-surface p-5 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex-1">
@@ -21,7 +23,9 @@ function BookCard({ book, onEdit, onDelete, onView }) {
         <div className="mt-2 flex items-center justify-between text-sm">
           <span className="text-text-secondary">Rating</span>
 
-          <span className="font-medium text-text-primary">4.2 ⭐</span>
+          <span className="font-medium text-text-primary">
+            ⭐ {generateRating()}
+          </span>
         </div>
       </div>
 

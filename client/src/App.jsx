@@ -21,7 +21,7 @@ function App() {
     setTimeout(() => {
       setModal(null);
       setSelectedBook(null);
-    }, 500);
+    }, 400);
   };
 
   return (
