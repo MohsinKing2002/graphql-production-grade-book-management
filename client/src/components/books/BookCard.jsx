@@ -18,15 +18,11 @@ function BookCard({ book, onEdit, onDelete, onView }) {
           </span>
         </div>
 
-        {book.rating !== null && book.rating !== undefined && (
-          <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-text-secondary">Rating</span>
+        <div className="mt-2 flex items-center justify-between text-sm">
+          <span className="text-text-secondary">Rating</span>
 
-            <span className="font-medium text-text-primary">
-              ⭐ {book.rating}
-            </span>
-          </div>
-        )}
+          <span className="font-medium text-text-primary">4.2 ⭐</span>
+        </div>
       </div>
 
       <div className="mt-6 flex justify-evenly flex-wrap gap-2 border-t border-border pt-4">

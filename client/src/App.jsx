@@ -18,21 +18,26 @@ function App() {
   };
 
   const closeModal = () => {
-    setModal(null);
-    setSelectedBook(null);
+    setTimeout(() => {
+      setModal(null);
+      setSelectedBook(null);
+    }, 500);
   };
 
   return (
     <AppLayout>
       <div className="space-y-8">
-        <CreateBook />
-
         <BookList
+          onCreate={() => openModal("create")}
           onView={(book) => openModal("view", book)}
           onEdit={(book) => openModal("edit", book)}
           onDelete={(book) => openModal("delete", book)}
         />
       </div>
+
+      <Modal open={modal === "create"} title="Add a Book" onClose={closeModal}>
+        <CreateBook onClose={closeModal} />
+      </Modal>
 
       <Modal open={modal === "view"} title="Book Details" onClose={closeModal}>
         {selectedBook && <BookDetails bookId={selectedBook.id} />}

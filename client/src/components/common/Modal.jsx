@@ -12,7 +12,7 @@ function Modal({ open, title, children, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="text-2xl leading-none text-text-secondary hover:text-text-primary"
+            className="cursor-pointer text-2xl leading-none text-text-secondary hover:text-text-primary"
           >
             ×
           </button>

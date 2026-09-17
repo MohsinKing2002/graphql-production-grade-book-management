@@ -7,7 +7,6 @@ function UpdateBook({ book, onClose }) {
   const [formData, setFormData] = useState({
     title: book.title,
     author: book.author,
-    rating: book.rating ?? "",
     publishedYear: book.publishedYear ?? "",
   });
 
@@ -34,7 +33,6 @@ function UpdateBook({ book, onClose }) {
           input: {
             title: formData.title,
             author: formData.author,
-            rating: formData.rating ? Number(formData.rating) : null,
             publishedYear: formData.publishedYear
               ? Number(formData.publishedYear)
               : null,
@@ -64,15 +62,6 @@ function UpdateBook({ book, onClose }) {
         value={formData.author}
         onChange={handleChange}
         required
-      />
-
-      <Input
-        label="Rating"
-        name="rating"
-        type="number"
-        value={formData.rating}
-        onChange={handleChange}
-        placeholder="e.g. 4.5"
       />
 
       <Input
