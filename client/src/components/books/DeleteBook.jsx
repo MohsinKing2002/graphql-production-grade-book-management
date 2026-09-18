@@ -4,7 +4,21 @@ import { Button } from "../common";
 
 function DeleteBook({ book, onClose }) {
   const [deleteBook, { loading, error }] = useMutation(DELETE_BOOK, {
-    refetchQueries: ["GetBooks"],
+    update(cache, { data }) {
+      const deletedBook = data?.deleteBook;
+
+      if (!deletedBook) return;
+
+      cache.modify({
+        fields: {
+          books(existingBooks = [], { readField }) {
+            return existingBooks.filter(
+              (bookRef) => readField("id", bookRef) !== deletedBook.id,
+            );
+          },
+        },
+      });
+    },
   });
 
   const handleDelete = async () => {

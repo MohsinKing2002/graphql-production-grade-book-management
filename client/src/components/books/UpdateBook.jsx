@@ -10,9 +10,7 @@ function UpdateBook({ book, onClose }) {
     publishedYear: book.publishedYear ?? "",
   });
 
-  const [updateBook, { loading, error }] = useMutation(UPDATE_BOOK, {
-    refetchQueries: ["GetBooks"],
-  });
+  const [updateBook, { loading, error }] = useMutation(UPDATE_BOOK);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { CREATE_BOOK } from "../../graphql/mutations/book.mutations.js";
 import { Input, Button } from "../common";
+import { gql } from "@apollo/client";
 
 function CreateBook({ onClose }) {
   const [formData, setFormData] = useState({
@@ -11,7 +12,38 @@ function CreateBook({ onClose }) {
   });
 
   const [createBook, { loading, error }] = useMutation(CREATE_BOOK, {
-    refetchQueries: ["GetBooks"],
+    update(cache, { data }) {
+      const newBook = data?.createBook;
+
+      if (!newBook) return;
+
+      cache.modify({
+        fields: {
+          books(existingBooks = [], { readField }) {
+            const alreadyExists = existingBooks.some(
+              (bookRef) => readField("id", bookRef) === newBook.id,
+            );
+
+            if (alreadyExists) return existingBooks;
+
+            return [
+              ...existingBooks,
+              cache.writeFragment({
+                data: newBook,
+                fragment: gql`
+                  fragment NewBook on Book {
+                    id
+                    title
+                    author
+                    publishedYear
+                  }
+                `,
+              }),
+            ];
+          },
+        },
+      });
+    },
   });
 
   const handleChange = (event) => {
