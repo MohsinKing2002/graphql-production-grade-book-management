@@ -4,6 +4,18 @@ import { Button } from "../common";
 
 function DeleteBook({ book, onClose }) {
   const [deleteBook, { loading, error }] = useMutation(DELETE_BOOK, {
+    // optimistic update
+    optimisticResponse: {
+      deleteBook: {
+        __typename: "Book",
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        publishedYear: book.publishedYear,
+      },
+    },
+
+    // cache modify
     update(cache, { data }) {
       const deletedBook = data?.deleteBook;
 
