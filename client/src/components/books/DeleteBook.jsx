@@ -4,33 +4,35 @@ import { Button } from "../common";
 
 function DeleteBook({ book, onClose }) {
   const [deleteBook, { loading, error }] = useMutation(DELETE_BOOK, {
-    // optimistic update
-    optimisticResponse: {
-      deleteBook: {
-        __typename: "Book",
-        id: book.id,
-        title: book.title,
-        author: book.author,
-        publishedYear: book.publishedYear,
-      },
-    },
+    refetchQueries: ["GetBooks"],
 
-    // cache modify
-    update(cache, { data }) {
-      const deletedBook = data?.deleteBook;
+    // // optimistic update
+    // optimisticResponse: {
+    //   deleteBook: {
+    //     __typename: "Book",
+    //     id: book.id,
+    //     title: book.title,
+    //     author: book.author,
+    //     publishedYear: book.publishedYear,
+    //   },
+    // },
 
-      if (!deletedBook) return;
+    // // cache modify
+    // update(cache, { data }) {
+    //   const deletedBook = data?.deleteBook;
 
-      cache.modify({
-        fields: {
-          books(existingBooks = [], { readField }) {
-            return existingBooks.filter(
-              (bookRef) => readField("id", bookRef) !== deletedBook.id,
-            );
-          },
-        },
-      });
-    },
+    //   if (!deletedBook) return;
+
+    //   cache.modify({
+    //     fields: {
+    //       books(existingBooks = [], { readField }) {
+    //         return existingBooks.filter(
+    //           (bookRef) => readField("id", bookRef) !== deletedBook.id,
+    //         );
+    //       },
+    //     },
+    //   });
+    // },
   });
 
   const handleDelete = async () => {

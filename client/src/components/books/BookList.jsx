@@ -2,9 +2,20 @@ import { useQuery } from "@apollo/client/react";
 import { GET_BOOKS } from "../../graphql/queries/book.queries.js";
 import BookCard from "./BookCard.jsx";
 import { Button } from "../../components/common";
+import { useState } from "react";
 
 function BookList({ onView, onEdit, onDelete, onCreate }) {
-  const { loading, error, data } = useQuery(GET_BOOKS);
+  const [page, setPage] = useState(1);
+  const limit = 6;
+
+  const { loading, error, data } = useQuery(GET_BOOKS, {
+    variables: {
+      page,
+      limit,
+    },
+  });
+
+  const pagination = data?.books?.pagination;
 
   if (loading) {
     return (
@@ -33,7 +44,7 @@ function BookList({ onView, onEdit, onDelete, onCreate }) {
     );
   }
 
-  if (!data?.books?.length) {
+  if (!data?.books?.items?.length) {
     return (
       <div className="rounded-card border border-border bg-surface p-10 text-center">
         <h2 className="text-lg font-semibold text-text-primary">
@@ -58,7 +69,8 @@ function BookList({ onView, onEdit, onDelete, onCreate }) {
           <h2 className="text-xl font-semibold text-text-primary">Books</h2>
 
           <p className="mt-1 text-sm text-text-secondary">
-            {data.books.length} {data.books.length === 1 ? "book" : "books"}
+            {data.books.pagination?.totalItems}{" "}
+            {data.books.pagination?.totalItems == 1 ? "book" : "books"}
           </p>
         </div>
         <Button onClick={onCreate} variant="primary">
@@ -66,8 +78,9 @@ function BookList({ onView, onEdit, onDelete, onCreate }) {
         </Button>
       </div>
 
+      {/* ---------- books list --------------- */}
       <div className="grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {data.books.map((book) => (
+        {data?.books?.items?.map((book) => (
           <BookCard
             key={book.id}
             book={book}
@@ -77,6 +90,47 @@ function BookList({ onView, onEdit, onDelete, onCreate }) {
           />
         ))}
       </div>
+
+      {/* ---------- pagination --------------- */}
+      {pagination && (
+        <div className="mt-6 flex justify-end">
+          <div className="flex items-center gap-2">
+            {/* Previous */}
+            <Button
+              variant="secondary"
+              disabled={!pagination.hasPreviousPage}
+              onClick={() => setPage((current) => current - 1)}
+            >
+              ←
+            </Button>
+
+            {/* Page Numbers */}
+            {Array.from(
+              { length: pagination.totalPages },
+              (_, index) => index + 1,
+            ).map((pageNumber) => (
+              <Button
+                key={pageNumber}
+                variant={
+                  pageNumber === pagination.page ? "primary" : "secondary"
+                }
+                onClick={() => setPage(pageNumber)}
+              >
+                {pageNumber}
+              </Button>
+            ))}
+
+            {/* Next */}
+            <Button
+              variant="secondary"
+              disabled={!pagination.hasNextPage}
+              onClick={() => setPage((current) => current + 1)}
+            >
+              →
+            </Button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

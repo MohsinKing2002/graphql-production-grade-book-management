@@ -12,38 +12,40 @@ function CreateBook({ onClose }) {
   });
 
   const [createBook, { loading, error }] = useMutation(CREATE_BOOK, {
-    update(cache, { data }) {
-      const newBook = data?.createBook;
+    refetchQueries: ["GetBooks"],
 
-      if (!newBook) return;
+    // update(cache, { data }) {
+    //   const newBook = data?.createBook;
 
-      cache.modify({
-        fields: {
-          books(existingBooks = [], { readField }) {
-            const alreadyExists = existingBooks.some(
-              (bookRef) => readField("id", bookRef) === newBook.id,
-            );
+    //   if (!newBook) return;
 
-            if (alreadyExists) return existingBooks;
+    //   cache.modify({
+    //     fields: {
+    //       books(existingBooks = [], { readField }) {
+    //         const alreadyExists = existingBooks.some(
+    //           (bookRef) => readField("id", bookRef) === newBook.id,
+    //         );
 
-            return [
-              ...existingBooks,
-              cache.writeFragment({
-                data: newBook,
-                fragment: gql`
-                  fragment NewBook on Book {
-                    id
-                    title
-                    author
-                    publishedYear
-                  }
-                `,
-              }),
-            ];
-          },
-        },
-      });
-    },
+    //         if (alreadyExists) return existingBooks;
+
+    //         return [
+    //           ...existingBooks,
+    //           cache.writeFragment({
+    //             data: newBook,
+    //             fragment: gql`
+    //               fragment NewBook on Book {
+    //                 id
+    //                 title
+    //                 author
+    //                 publishedYear
+    //               }
+    //             `,
+    //           }),
+    //         ];
+    //       },
+    //     },
+    //   });
+    // },
   });
 
   const handleChange = (event) => {
