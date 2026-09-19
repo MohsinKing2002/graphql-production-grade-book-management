@@ -3,6 +3,15 @@ export const createBookRepository = (books) => ({
     return books;
   },
 
+  getPaginatedBooks: (offset, limit) => {
+    const items = books.slice(offset, offset + limit);
+
+    return {
+      items,
+      totalItems: books.length,
+    };
+  },
+
   getBookById: (id) => {
     return books.find((book) => book.id === id);
   },

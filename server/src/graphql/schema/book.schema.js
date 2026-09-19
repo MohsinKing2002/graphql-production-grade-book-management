@@ -5,6 +5,20 @@ export const bookTypeDefs = `#graphql
         author: String!
         publishedYear: Int
     }
+
+    type PaginationInfo {
+        page: Int!
+        limit: Int!
+        totalItems: Int!
+        totalPages: Int!
+        hasNextPage: Boolean!
+        hasPreviousPage: Boolean!
+    }
+
+    type BookConnection {
+        items: [Book!]!
+        pagination: PaginationInfo!
+    }
     
     input CreateBookInput {
         title: String!
@@ -19,7 +33,7 @@ export const bookTypeDefs = `#graphql
     }
 
     type Query {
-        books: [Book!]!
+        books(page: Int = 0, limit: Int = 10): BookConnection!
         book(id: ID!): Book
     }
 

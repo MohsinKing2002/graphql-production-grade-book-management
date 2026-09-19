@@ -5,6 +5,44 @@ export const createBookService = (bookRepository) => ({
     return bookRepository.getAllBooks();
   },
 
+  getPaginatedBooks: (page = 1, limit = 10) => {
+    //pagination validation
+    if (page < 1)
+      throw new AppError(
+        "Page must be greater than or equal to 1",
+        "VALIDATION_ERROR",
+      );
+
+    if (limit < 1)
+      throw new AppError(
+        "Limit must be greater than or equal to 1",
+        "VALIDATION_ERROR",
+      );
+
+    if (limit > 100)
+      throw new AppError("Limit cannot exceed 100", "VALIDATION_ERROR");
+
+    const offset = (page - 1) * limit;
+
+    const { items, totalItems } = bookRepository.getPaginatedBooks(
+      offset,
+      limit,
+    );
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+      items,
+      pagination: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  },
+
   getBook: (id) => {
     return bookRepository.getBookById(id);
   },

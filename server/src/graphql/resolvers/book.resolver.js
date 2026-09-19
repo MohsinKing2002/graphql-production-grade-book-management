@@ -1,6 +1,6 @@
 export const createBookResolvers = (bookService) => ({
   Query: {
-    books: () => bookService.getBooks(),
+    books: (_, { page, limit }) => bookService.getPaginatedBooks(page, limit),
     book: (_, { id }) => bookService.getBook(id),
   },
   Mutation: {
