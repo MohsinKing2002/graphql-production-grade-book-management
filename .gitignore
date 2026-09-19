@@ -18,7 +18,11 @@ server/build/
 # Frontend / Client Ignored Files
 # ==========================================
 client/node_modules/
-client/.env.local
+client/.env
 client/.env.development.local
 client/dist/
 client/build/
+
+
+# exclude env example
+!.env.example
