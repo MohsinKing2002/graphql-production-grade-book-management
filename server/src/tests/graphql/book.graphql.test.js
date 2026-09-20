@@ -8,11 +8,21 @@ describe("Book GraphQL API", () => {
     const server = createTestServer();
     const query = `
         query {
-            books {
+            books (page: 1, limit: 2) {
+              items {
                 id
                 title
                 author
                 publishedYear
+              }
+              pagination {
+                page
+                limit
+                totalItems
+                totalPages
+                hasNextPage
+                hasPreviousPage
+              }
             }
         }
     `;
@@ -21,8 +31,8 @@ describe("Book GraphQL API", () => {
 
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.error).toBeUndefined();
-    expect(response.body.singleResult.data.books).toHaveLength(2);
-    expect(response.body.singleResult.data.books[0]).toEqual({
+    expect(response.body.singleResult.data.books.items).toHaveLength(2);
+    expect(response.body.singleResult.data.books.items[0]).toEqual({
       id: "1",
       title: "Test Book 1",
       author: "Test Author 1",
@@ -165,18 +175,28 @@ describe("Book GraphQL API", () => {
     // check persistent
     const query = `
       query {
-        books {
-          id
-          title
-          author
-          publishedYear
+        books (page: 1, limit: 10) {
+          items {
+            id
+            title
+            author
+            publishedYear
+          }
+          pagination {
+            page
+            limit
+            totalItems
+            totalPages
+            hasNextPage
+            hasPreviousPage
+          }
         }
       }
     `;
     const persistResponse = await executeOperation(server, query);
 
     expect(persistResponse.body.singleResult.errors).toBeUndefined();
-    expect(persistResponse.body.singleResult.data.books).toContainEqual(
+    expect(persistResponse.body.singleResult.data.books.items).toContainEqual(
       createdBook,
     );
   });
