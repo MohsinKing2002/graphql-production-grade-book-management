@@ -2,8 +2,11 @@ services:
   server:
     build:
       context: ./server
-    image: graphql-server:1.0.0
+    image: graphql-server:latest
     container_name: graphql-server
+    environment:
+      NODE_ENV: production
+      PORT: 4000
     ports:
       - "4000:4000"
 
@@ -12,7 +15,7 @@ services:
       context: ./client
       args:
         - VITE_GRAPHQL_API_URL=http://localhost:4000/graphql
-    image: graphql-client:1.0.0
+    image: graphql-client:latest
     container_name: graphql-client
     ports:
       - "3000:80"
