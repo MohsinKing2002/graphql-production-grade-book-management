@@ -1,4 +1,5 @@
-FROM node:24-alpine
+# ------ stage 1: Build --------
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -15,9 +16,11 @@ ENV VITE_GRAPHQL_API_URL=$VITE_GRAPHQL_API_URL
 
 RUN pnpm build
 
-RUN apk add --no-cache nginx
 
-RUN mkdir -p /run/nginx
+# ------ stage 2: Runtime --------
+FROM nginx:alpine
+    
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
