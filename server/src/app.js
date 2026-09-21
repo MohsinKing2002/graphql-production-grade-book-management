@@ -24,7 +24,7 @@ export const server = new ApolloServer({
     }
 
     // Unexpected application error
-    console.log("Unexpected graphql error:", originalError);
+    console.error("Unexpected graphql error :->>", originalError);
 
     return {
       message: "Internal Server Error",
