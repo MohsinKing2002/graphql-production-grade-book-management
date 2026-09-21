@@ -63,13 +63,49 @@ jobs:
             ${{secrets.DOCKERHUB_USERNAME}}/graphql-client:${{steps.vars.outputs.IMAGE_TAG}}
 
       - name: Deploy server to Render
+        id: deploy_server
         if: inputs.service == 'server' || inputs.service == 'both'
         run: |
-          curl --fail --request POST \
-            "${{secrets.RENDER_SERVER_DEPLOY_HOOK}}&imgURL=docker.io/${{secrets.DOCKERHUB_USERNAME}}/graphql-server:${{steps.vars.outputs.IMAGE_TAG}}"
+          response=$(curl --fail --request POST \
+            "${{secrets.RENDER_SERVER_DEPLOY_HOOK}}&imgURL=docker.io/${{secrets.DOCKERHUB_USERNAME}}/graphql-server:${{steps.vars.outputs.IMAGE_TAG}}")
+
+          echo "Render response:"
+          echo "$response"
+
+          deployed_server_id=$(echo "$response" | jq -r '.deploy.id')
+
+          echo "deployed_server_id=$deployed_server_id" >> "$GITHUB_OUTPUT"
 
       - name: Deploy client to Render
+        id: deploy_client
         if: inputs.service == 'client' || inputs.service == 'both'
         run: |
-          curl --fail --request POST \
-            "${{secrets.RENDER_CLIENT_DEPLOY_HOOK}}&imgURL=docker.io/${{secrets.DOCKERHUB_USERNAME}}/graphql-client:${{steps.vars.outputs.IMAGE_TAG}}"
+          response=$(curl --fail --request POST \
+            "${{secrets.RENDER_CLIENT_DEPLOY_HOOK}}&imgURL=docker.io/${{secrets.DOCKERHUB_USERNAME}}/graphql-client:${{steps.vars.outputs.IMAGE_TAG}}")
+
+          echo "Render response:"
+          echo "$response"
+
+          deployed_client_id=$(echo "$response" | jq -r '.deploy.id')
+
+          echo "deployed_client_id=$deployed_client_id" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for server deployment
+        if: inputs.service == 'server' || inputs.service == 'both'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          bash .github/scripts/render_deployment_verification.sh \
+            "Server" \
+            "${{ secrets.RENDER_SERVER_SRV_ID }}" \
+            "${{ steps.deploy_server.outputs.deployed_server_id }}"
+
+      - name: Wait for client deployment
+        if: inputs.service == 'client' || inputs.service == 'both'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          bash .github/scripts/render_deployment_verification.sh \
+            "Client" \
+            "${{ secrets.RENDER_CLIENT_SRV_ID }}" \
+            "${{ steps.deploy_client.outputs.deployed_client_id }}"

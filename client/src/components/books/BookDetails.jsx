@@ -8,6 +8,8 @@ function BookDetails({ bookId }) {
     },
   });
 
+  const generateRating = () => Number((Math.random() * 0.9 + 4).toFixed(1));
+
   if (loading) {
     return (
       <div className="animate-pulse space-y-4">
@@ -50,10 +52,10 @@ function BookDetails({ bookId }) {
         </div>
 
         <div className="rounded-md bg-background p-4">
-          <p className="text-xs text-text-secondary">Rating</p>
+          <p className="text-xs text-text-secondary">Random Ratings</p>
 
           <p className="mt-1 font-semibold text-text-primary">
-            {book.rating ?? "Not rated"}
+            {generateRating()}
           </p>
         </div>
       </div>

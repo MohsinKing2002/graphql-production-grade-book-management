@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import { GET_BOOKS } from "../../graphql/queries/book.queries.js";
 import BookCard from "./BookCard.jsx";
 import { Button } from "../../components/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function BookList({ onView, onEdit, onDelete, onCreate }) {
   const [page, setPage] = useState(1);
@@ -16,6 +16,13 @@ function BookList({ onView, onEdit, onDelete, onCreate }) {
   });
 
   const pagination = data?.books?.pagination;
+
+  useEffect(() => {
+    let books = data?.books?.items;
+    if (!books?.length && pagination?.hasPreviousPage) {
+      setPage((current) => current - 1);
+    }
+  }, [onDelete]);
 
   if (loading) {
     return (
