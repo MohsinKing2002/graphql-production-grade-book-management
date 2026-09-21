@@ -42,7 +42,7 @@ jobs:
       - name: Build Client image
         run: |
           docker build \
-            --build-arg VITE_GRAPHQL_API_URL="${{secrets.VITE_GRAPHQL_API_URL}}"
+            --build-arg VITE_GRAPHQL_API_URL="${{secrets.VITE_GRAPHQL_API_URL}}" \
             -t ${{secrets.DOCKERHUB_USERNAME}}/graphql-client:${{github.sha}} \
             ./client
 
