@@ -32,3 +32,19 @@ jobs:
 
       - name: Verify Docker
         run: docker info
+
+      - name: Build server image
+        run: |
+          docker build \
+            -t ${{secrets.DOCKERHUB_USERNAME}}/graphql-server:${{github.sha}} \
+            ./server
+
+      - name: Build Client image
+        run: |
+          docker build \
+            --build-arg VITE_GRAPHQL_API_URL="${{secrets.VITE_GRAPHQL_API_URL}}"
+            -t ${{secrets.DOCKERHUB_USERNAME}}/graphql-client:${{github.sha}} \
+            ./client
+
+      - name: Verify docker images
+        run: docker images
