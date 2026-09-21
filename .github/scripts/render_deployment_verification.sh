@@ -15,7 +15,7 @@ render_deployment_verification_script(){
     for i in {1..30}; do
         response=$(curl --fail --silent \
             -H "Authorization: Bearer $RENDER_API_KEY" \
-            https://api.render.com/v1/services/$service_id/deploys/$deploy_id")
+            "https://api.render.com/v1/services/$service_id/deploys/$deploy_id")
         
         status=$(echo "$response" | jq -r '.status')
 
